@@ -55,7 +55,7 @@ jobs:
           name: Storing previous commit
           command: |
             git rev-parse HEAD > ./commit.txt
-      - aws/install
+      - aws-cli/install
       - run:
           name: Configure AWS credentials
           command: |
@@ -80,4 +80,4 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - main.py
