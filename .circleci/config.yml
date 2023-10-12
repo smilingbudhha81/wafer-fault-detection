@@ -1,15 +1,13 @@
 version: 2.1
 
 orbs:
-  aws-ecr: circleci/aws-ecr@6.4.2
-  aws-cli: circleci/aws-cli@1.5.1
-
+  aws-ecr: circleci/aws-ecs@4.0.0
 jobs:
   build-and-test:
     docker:
       - image: circleci/python:3.7-stretch-browsers
         auth:
-          username: smilingbudha81
+          username: smilingbudhha81
           password: $DOCKER_HUB_PASSWORD_USER
     steps:
       - checkout
