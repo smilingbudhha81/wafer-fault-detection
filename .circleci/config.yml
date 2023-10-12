@@ -1,15 +1,17 @@
+
 version: 2.1
 
 orbs:
   aws-ecr: circleci/aws-ecs@4.0.0
-  aws-cli: circleci/aws-cli@4.1.1
+  aws-cli: circleci/aws-cli@1.0.0
 
 jobs:
   build-and-test:
+    executor: aws/default
     docker:
       - image: circleci/python:3.7-stretch-browsers
         auth:
-          username: smilingbudhha81
+          username: smilingbuddha81
           password: $DOCKER_HUB_PASSWORD_USER
     steps:
       - checkout
@@ -42,21 +44,19 @@ jobs:
       - run:
           name: Build and push Docker image
           command: |
-            aws ecr get-login-password --region <AWS_REGION> | docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com
-            docker build --tag <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/$IMAGE_NAME:$TAG .
-            docker push <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/$IMAGE_NAME:$TAG
+            docker build -t $DOCKERHUB_USER/$IMAGE_NAME:$TAG .
+            echo $DOCKER_HUB_PASSWORD_USER | docker login -u $DOCKERHUB_USER --password-stdin
+            docker push $DOCKERHUB_USER/$IMAGE_NAME:$TAG
   deploy:
     executor:
       name: aws-cli/default
-      python-version: "3.7"
-      steps:
-        -awscli/install
     steps:
       - checkout
       - run:
           name: Storing previous commit
           command: |
             git rev-parse HEAD > ./commit.txt
+      - aws/install
       - run:
           name: Configure AWS credentials
           command: |
@@ -66,9 +66,9 @@ jobs:
       - run:
           name: Deploying Docker container
           command: |
-            ecs update-service \
-              --service <AWS_ECS_SERVICE_NAME> \
-              --cluster <AWS_ECS_CLUSTER_NAME> \
+            aws ecs update-service \
+              --service "<AWS_ECS_SERVICE_NAME>" \
+              --cluster "<AWS_ECS_CLUSTER_NAME>" \
               --force-new-deployment
 
 workflows:
