@@ -2,6 +2,8 @@ version: 2.1
 
 orbs:
   aws-ecr: circleci/aws-ecs@4.0.0
+  aws-cli: circleci/aws-cli@4.1.1
+
 jobs:
   build-and-test:
     docker:
@@ -45,7 +47,10 @@ jobs:
             docker push <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/$IMAGE_NAME:$TAG
   deploy:
     executor:
-      name: aws-cli/python3
+      name: aws-cli/default
+      python-version: "3.7"
+      steps:
+        -awscli/install
     steps:
       - checkout
       - run:
