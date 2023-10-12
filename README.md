@@ -218,8 +218,8 @@ git push
 ## #docker login -u $DOCKERHUB_USER -p $DOCKER_HUB_PASSWORD_USER docker.io
 
     
-    
-    
+    aws deploment link :
+    http://ec2-54-234-56-28.compute-1.amazonaws.com:5000/predict
     
     
     
